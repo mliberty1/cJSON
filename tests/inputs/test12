@@ -1,0 +1,14 @@
+// This JSON file has c-style comments.  This is a line comment
+/* And here is
+ * a block comment
+ */
+{
+ "name": "Jack (\"Bee\") Nimble",
+ /* good formatting is a matter of perspective. */
+ "format": {
+  "type":       "rect", // must be "rect"!
+  "width":      1920,
+  "height":     1080,
+  "interlace":  false,"frame rate": 24
+ }
+}

@@ -46,6 +46,7 @@ if(ENABLE_CJSON_TEST)
         parse_string
         parse_array
         parse_object
+        parse_object_comments
         parse_value
         print_string
         print_number

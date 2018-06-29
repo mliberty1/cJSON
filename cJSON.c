@@ -959,6 +959,31 @@ static cJSON_bool print_array(const cJSON * const item, printbuffer * const outp
 static cJSON_bool parse_object(cJSON * const item, parse_buffer * const input_buffer);
 static cJSON_bool print_object(const cJSON * const item, printbuffer * const output_buffer);
 
+static void buffer_skip_to_end_of_line(parse_buffer * const buffer)
+{
+    while (can_access_at_index(buffer, 0))
+    {
+        if ((buffer_at_offset(buffer)[0] == '\n') || (buffer_at_offset(buffer)[0] == '\r'))
+        {
+            return;
+        }
+        buffer->offset++;
+    }
+}
+
+static void buffer_skip_to_end_of_block_comment(parse_buffer * const buffer)
+{
+    while (can_access_at_index(buffer, 0) && can_access_at_index(buffer, 1))
+    {
+        if ((buffer_at_offset(buffer)[0] == '*') && (buffer_at_offset(buffer)[1] == '/'))
+        {
+            buffer->offset += 2;
+            return;
+        }
+        buffer->offset++;
+    }
+}
+
 /* Utility to jump whitespace and cr/lf */
 static parse_buffer *buffer_skip_whitespace(parse_buffer * const buffer)
 {
@@ -967,10 +992,33 @@ static parse_buffer *buffer_skip_whitespace(parse_buffer * const buffer)
         return NULL;
     }
 
-    while (can_access_at_index(buffer, 0) && (buffer_at_offset(buffer)[0] <= 32))
+    while (can_access_at_index(buffer, 0))
     {
-       buffer->offset++;
+        if ((buffer_at_offset(buffer)[0] == '/') && can_access_at_index(buffer, 1))
+        {
+            if (buffer_at_offset(buffer)[1] == '/')
+            {
+                buffer_skip_to_end_of_line(buffer);
+            }
+            else if (buffer_at_offset(buffer)[1] == '*')
+            {
+                buffer_skip_to_end_of_block_comment(buffer);
+            }
+            else
+            {
+                break;
+            }
+        }
+        else if (buffer_at_offset(buffer)[0] <= 32)
+        {
+            buffer->offset++;
+        }
+        else
+        {
+            break;
+        }
     }
+
 
     if (buffer->offset == buffer->length)
     {

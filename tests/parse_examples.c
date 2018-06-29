@@ -179,7 +179,12 @@ static void file_test11_should_be_parsed_and_printed(void)
     do_test("test11");
 }
 
-static void test12_should_not_be_parsed(void)
+static void file_test12_should_be_parsed_and_printed(void)
+{
+    do_test("test12");
+}
+
+static void test13_should_not_be_parsed(void)
 {
     const char *test12 = "{ \"name\": ";
     cJSON *tree = NULL;
@@ -209,6 +214,7 @@ int main(void)
     RUN_TEST(file_test9_should_be_parsed_and_printed);
     RUN_TEST(file_test10_should_be_parsed_and_printed);
     RUN_TEST(file_test11_should_be_parsed_and_printed);
-    RUN_TEST(test12_should_not_be_parsed);
+    RUN_TEST(file_test12_should_be_parsed_and_printed);
+    RUN_TEST(test13_should_not_be_parsed);
     return UNITY_END();
 }
